@@ -265,17 +265,23 @@ export default {
                     this.x = touchmovement.pageX-sx;
                     this.y = touchmovement.pageY-sy;
 
-                    if(touchmovement.pageX-sx <= (this.origX - this.zoomWidth)){        
-                      this.x = this.origX - this.zoomWidth;
+                    // Apply constraints based on actual zoom image dimensions
+                    const maxX = Math.max(0, this.zoomWidth - this.origX);
+                    const maxY = Math.max(0, this.zoomHeight - this.origY);
+                    
+                    // Constrain X position
+                    if(this.x <= -maxX){        
+                      this.x = -maxX;
                     }
-                    if(touchmovement.pageX-sx >= 0){
-                      this.x = -1;
+                    if(this.x >= 0){
+                      this.x = 0;
                     }
-                    if(touchmovement.pageY-sy <= (this.origY - (this.options.zoomAmount * this.origY))){
-                      this.y = this.origY - (this.options.zoomAmount * this.origY); 
+                    // Constrain Y position  
+                    if(this.y <= -maxY){
+                      this.y = -maxY; 
                     }
-                    if(touchmovement.pageY-sy >= 0){
-                      this.y = -1;
+                    if(this.y >= 0){
+                      this.y = 0;
                     }
 
                     this.touchPosition='translate3d('+
@@ -352,7 +358,7 @@ export default {
             //set zoom width if zoom amount option applied
             if(this.options.zoomAmount != 0){
                 this.zoomWidth = this.origX * this.options.zoomAmount;
-                this.zoomHeight = this.origY * this.options.zoomAmount;
+                // Don't set zoomHeight here - let it be calculated from the actual image
                 if(this.touch){
                   this.mobilePos();
                 }
@@ -407,6 +413,9 @@ export default {
                     this.zoomWidth = src.target.width;
                     this.zoomHeight = src.target.height;
                     this.options.zoomAmount = src.target.width / this.origX;
+                } else {
+                    // If zoomAmount is set, calculate height based on actual image ratio
+                    this.zoomHeight = (src.target.height / src.target.width) * this.zoomWidth;
                 }
                 this.loaded = true;
                 this.loading = false; 
@@ -432,8 +441,13 @@ export default {
             }
         },
         mobilePos(){
-            let X = (this.zoomWidth - this.origX) * this.touchZoomPos[0];
-            let Y = (this.zoomHeight - this.origY) * this.touchZoomPos[1];
+            // Calculate maximum possible movement for each dimension
+            const maxX = Math.max(0, this.zoomWidth - this.origX);
+            const maxY = Math.max(0, this.zoomHeight - this.origY);
+            
+            let X = maxX * this.touchZoomPos[0];
+            let Y = maxY * this.touchZoomPos[1];
+            
             if(this.touchZoomPos[0] > 1 || this.touchZoomPos[0] < 0 || this.touchZoomPos[1] > 1 || this.touchZoomPos[1] < 0){
                 X = 0;
                 Y = 0;
@@ -455,8 +469,22 @@ export default {
                     this.offset();
                     this.zoomLoad();
                 } else {
-                    this.x = (e.pageX - this.offsetLeft) * (this.options.zoomAmount - 1);
-                    this.y = (e.pageY - this.offsetTop) * (this.options.zoomAmount - 1);
+                    // Calculate position based on actual zoom image dimensions
+                    const mouseX = e.pageX - this.offsetLeft;
+                    const mouseY = e.pageY - this.offsetTop;
+                    
+                    // Calculate zoom factors for both dimensions
+                    const zoomFactorX = this.zoomWidth / this.origX;
+                    const zoomFactorY = this.zoomHeight / this.origY;
+                    
+                    // Calculate maximum movement for each dimension based on zoom image
+                    const maxX = Math.max(0, this.zoomWidth - this.origX);
+                    const maxY = Math.max(0, this.zoomHeight - this.origY);
+                    
+                    // Calculate position with proper constraints
+                    // Use the actual zoom image dimensions for calculations
+                    this.x = Math.max(0, Math.min(mouseX * (zoomFactorX - 1), maxX));
+                    this.y = Math.max(0, Math.min(mouseY * (zoomFactorY - 1), maxY));
                 }
             }
         }

@@ -1,21 +1,21 @@
-import { nextTick as w, resolveDirective as y, openBlock as h, createElementBlock as n, Fragment as a, renderSlot as b, createCommentVNode as m, withDirectives as _, createElementVNode as d, normalizeClass as r, renderList as c, normalizeStyle as g, createVNode as f, Transition as v, withCtx as z, withModifiers as A, vShow as k } from "vue";
-const W = (e, o) => {
-  const s = e.__vccOpts || e;
-  for (const [l, t] of o)
-    s[l] = t;
-  return s;
-}, x = {
+import { resolveDirective as y, createElementBlock as n, openBlock as m, Fragment as c, renderSlot as w, createCommentVNode as r, withDirectives as x, createElementVNode as d, createVNode as g, normalizeClass as a, renderList as f, normalizeStyle as z, Transition as v, withCtx as p, withModifiers as b, vShow as W, nextTick as _ } from "vue";
+const k = (s, o) => {
+  const e = s.__vccOpts || s;
+  for (const [h, t] of o)
+    e[h] = t;
+  return e;
+}, A = {
   name: "VueImageZoomer",
   emits: ["onZoom", "offZoom", "regularLoaded", "zoomLoaded", "zoomLoading"],
   directives: {
     clickOutside: {
-      mounted(e, o) {
-        e.clickOutsideEvent = function(s) {
-          e == s.target || e.contains(s.target) || o.value(s, e);
-        }, document.body.addEventListener("click", e.clickOutsideEvent);
+      mounted(s, o) {
+        s.clickOutsideEvent = function(e) {
+          s == e.target || s.contains(e.target) || o.value(e, s);
+        }, document.body.addEventListener("click", s.clickOutsideEvent);
       },
-      unmounted(e) {
-        document.body.removeEventListener("click", e.clickOutsideEvent);
+      unmounted(s) {
+        document.body.removeEventListener("click", s.clickOutsideEvent);
       }
     }
   },
@@ -115,7 +115,7 @@ const W = (e, o) => {
     }
   },
   mounted() {
-    this.check_webp_feature("lossy", (e, o) => {
+    this.check_webp_feature("lossy", (s, o) => {
       o && (this.webp_supported = !0);
     }), this.get_options(), ("ontouchstart" in window || navigator.msMaxTouchPoints) && (this.touch = !0), this.touchLogic();
   },
@@ -129,31 +129,33 @@ const W = (e, o) => {
   },
   methods: {
     async touchLogic() {
-      await w();
-      let e, o, s = !1;
-      this.$refs["vue-hover-zs"].addEventListener("touchstart", (l) => {
+      await _();
+      let s, o, e = !1;
+      this.$refs["vue-hover-zs"].addEventListener("touchstart", (h) => {
         if (this.zoomed) {
-          l.cancelable && l.preventDefault();
-          let t = l.changedTouches[0];
-          e = t.pageX - this.cx, o = t.pageY - this.cy;
+          h.cancelable && h.preventDefault();
+          let t = h.changedTouches[0];
+          s = t.pageX - this.cx, o = t.pageY - this.cy;
         }
-      }), this.$refs["vue-hover-zs"].addEventListener("touchmove", (l) => {
+      }), this.$refs["vue-hover-zs"].addEventListener("touchmove", (h) => {
         if (this.zoomed) {
-          let t = l.changedTouches[0];
-          this.x = t.pageX - e, this.y = t.pageY - o, t.pageX - e <= this.origX - this.zoomWidth && (this.x = this.origX - this.zoomWidth), t.pageX - e >= 0 && (this.x = -1), t.pageY - o <= this.origY - this.options.zoomAmount * this.origY && (this.y = this.origY - this.options.zoomAmount * this.origY), t.pageY - o >= 0 && (this.y = -1), this.touchPosition = "translate3d(" + this.x + "px," + this.y + "px,0)", s = !0;
+          let t = h.changedTouches[0];
+          this.x = t.pageX - s, this.y = t.pageY - o;
+          const l = Math.max(0, this.zoomWidth - this.origX), u = Math.max(0, this.zoomHeight - this.origY);
+          this.x <= -l && (this.x = -l), this.x >= 0 && (this.x = 0), this.y <= -u && (this.y = -u), this.y >= 0 && (this.y = 0), this.touchPosition = "translate3d(" + this.x + "px," + this.y + "px,0)", e = !0;
         }
-      }), this.$refs["vue-hover-zs"].addEventListener("touchend", (l) => {
+      }), this.$refs["vue-hover-zs"].addEventListener("touchend", (h) => {
         if (this.zoomed) {
-          let t = l.changedTouches[0];
-          this.cx = t.pageX - e, this.cy = t.pageY - o, !s && this.tapToClose && (this.zoomed = !1, this.$emit("offZoom")), s = !1;
+          let t = h.changedTouches[0];
+          this.cx = t.pageX - s, this.cy = t.pageY - o, !e && this.tapToClose && (this.zoomed = !1, this.$emit("offZoom")), e = !1;
         }
       });
     },
-    debounce(e, o) {
-      let s;
-      return (...l) => {
+    debounce(s, o) {
+      let e;
+      return (...h) => {
         const t = this;
-        clearTimeout(s), s = setTimeout(() => e.apply(t, l), o);
+        clearTimeout(e), e = setTimeout(() => s.apply(t, h), o);
       };
     },
     get_options() {
@@ -162,188 +164,195 @@ const W = (e, o) => {
     resize() {
       this.zoomed = !1, this.loaded = !1;
     },
-    check_webp_feature(e, o) {
-      let s = {
+    check_webp_feature(s, o) {
+      let e = {
         lossy: "UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA"
-      }, l = new Image();
-      l.onload = () => {
-        let t = l.width > 0 && l.height > 0;
-        o(e, t);
-      }, l.onerror = () => {
-        o(e, !1);
-      }, l.src = "data:image/webp;base64," + s[e];
+      }, h = new Image();
+      h.onload = () => {
+        let t = h.width > 0 && h.height > 0;
+        o(s, t);
+      }, h.onerror = () => {
+        o(s, !1);
+      }, h.src = "data:image/webp;base64," + e[s];
     },
-    loadImage(e, o) {
-      const s = new Image();
-      s.onload = o, s.src = e;
+    loadImage(s, o) {
+      const e = new Image();
+      e.onload = o, e.src = s;
     },
     loadZoom() {
-      this.offset(), this.options.zoomAmount != 0 && (this.zoomWidth = this.origX * this.options.zoomAmount, this.zoomHeight = this.origY * this.options.zoomAmount, this.touch && this.mobilePos()), this.loaded ? (this.zoomed = !0, this.options.zoomAmount == 0 && (this.options.zoomAmount = this.zoomWidth / this.origX)) : this.zoomLoad();
+      this.offset(), this.options.zoomAmount != 0 && (this.zoomWidth = this.origX * this.options.zoomAmount, this.touch && this.mobilePos()), this.loaded ? (this.zoomed = !0, this.options.zoomAmount == 0 && (this.options.zoomAmount = this.zoomWidth / this.origX)) : this.zoomLoad();
     },
     zoomLoad() {
       (!this.clickZoom || this.touch) && (this.loading = !0, this.$emit("zoomLoading"));
-      let e = this.options.zoom;
+      let s = this.options.zoom;
       this.breakpoints && this.breakpoints.forEach((o) => {
-        window.innerWidth >= o.width && (o.zoom ? e = o.zoom : e = o.regular);
-      }), this.webp_supported && this.options.zoomWebp && (e = this.options.zoomWebp, this.breakpoints && this.breakpoints.forEach((o) => {
-        window.innerWidth >= o.width && (o.zoomWebp ? e = o.zoomWebp : e = o.regularWebp);
-      })), this.loadImage(e, (o) => {
-        this.options.zoomAmount == 0 && (this.zoomWidth = o.target.width, this.zoomHeight = o.target.height, this.options.zoomAmount = o.target.width / this.origX), this.loaded = !0, this.loading = !1, this.$emit("zoomLoaded"), (!this.clickZoom || this.touch) && (this.zoomed = !0, this.mobilePos());
+        window.innerWidth >= o.width && (o.zoom ? s = o.zoom : s = o.regular);
+      }), this.webp_supported && this.options.zoomWebp && (s = this.options.zoomWebp, this.breakpoints && this.breakpoints.forEach((o) => {
+        window.innerWidth >= o.width && (o.zoomWebp ? s = o.zoomWebp : s = o.regularWebp);
+      })), this.loadImage(s, (o) => {
+        this.options.zoomAmount == 0 ? (this.zoomWidth = o.target.width, this.zoomHeight = o.target.height, this.options.zoomAmount = o.target.width / this.origX) : this.zoomHeight = o.target.height / o.target.width * this.zoomWidth, this.loaded = !0, this.loading = !1, this.$emit("zoomLoaded"), (!this.clickZoom || this.touch) && (this.zoomed = !0, this.mobilePos());
       });
     },
-    isZoom(e, o) {
-      (o == "hover" && !this.clickZoom && !this.touch || o == "click" && (this.clickZoom || this.touch) || typeof e == "object") && (this.zoomed = !1, e == !0 ? (this.loadZoom(), this.$emit("onZoom")) : this.$emit("offZoom"));
+    isZoom(s, o) {
+      (o == "hover" && !this.clickZoom && !this.touch || o == "click" && (this.clickZoom || this.touch) || typeof s == "object") && (this.zoomed = !1, s == !0 ? (this.loadZoom(), this.$emit("onZoom")) : this.$emit("offZoom"));
     },
     mobilePos() {
-      let e = (this.zoomWidth - this.origX) * this.touchZoomPos[0], o = (this.zoomHeight - this.origY) * this.touchZoomPos[1];
-      (this.touchZoomPos[0] > 1 || this.touchZoomPos[0] < 0 || this.touchZoomPos[1] > 1 || this.touchZoomPos[1] < 0) && (e = 0, o = 0), this.cx = -e, this.cy = -o, this.x = -e, this.y = -o, this.touchPosition = "translate3d(-" + e + "px,-" + o + "px,0)";
+      const s = Math.max(0, this.zoomWidth - this.origX), o = Math.max(0, this.zoomHeight - this.origY);
+      let e = s * this.touchZoomPos[0], h = o * this.touchZoomPos[1];
+      (this.touchZoomPos[0] > 1 || this.touchZoomPos[0] < 0 || this.touchZoomPos[1] > 1 || this.touchZoomPos[1] < 0) && (e = 0, h = 0), this.cx = -e, this.cy = -h, this.x = -e, this.y = -h, this.touchPosition = "translate3d(-" + e + "px,-" + h + "px,0)";
     },
     offset() {
       this.origX = parseFloat(this.$refs["vue-hover-zs"].offsetWidth), this.origY = parseFloat(this.$refs["vue-hover-zs"].offsetHeight);
     },
-    mousePos(e) {
-      this.offsetLeft = window.pageXOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().left, this.offsetTop = window.pageYOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().top, !this.touch && !this.loading && (this.loaded ? (this.x = (e.pageX - this.offsetLeft) * (this.options.zoomAmount - 1), this.y = (e.pageY - this.offsetTop) * (this.options.zoomAmount - 1)) : (this.offset(), this.zoomLoad()));
+    mousePos(s) {
+      if (this.offsetLeft = window.pageXOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().left, this.offsetTop = window.pageYOffset + this.$refs["vue-hover-zs"].getBoundingClientRect().top, !this.touch && !this.loading)
+        if (!this.loaded)
+          this.offset(), this.zoomLoad();
+        else {
+          const o = s.pageX - this.offsetLeft, e = s.pageY - this.offsetTop, h = this.zoomWidth / this.origX, t = this.zoomHeight / this.origY, l = Math.max(0, this.zoomWidth - this.origX), u = Math.max(0, this.zoomHeight - this.origY);
+          this.x = Math.max(0, Math.min(o * (h - 1), l)), this.y = Math.max(0, Math.min(e * (t - 1), u));
+        }
     }
   }
-}, L = { class: "vh--outer vh--rel" }, Z = ["srcset", "media"], T = ["srcset", "media"], M = ["srcset"], P = ["loading", "src", "alt", "width", "height"], S = { key: 0 }, C = ["srcset", "media"], H = ["srcset", "media"], X = ["srcset", "media"], Y = ["srcset", "media"], E = ["src"], B = ["src"], I = ["src"], V = ["innerHTML"], j = ["innerHTML"], O = ["innerHTML"], N = {
+}, M = { class: "vh--outer vh--rel" }, L = ["srcset", "media"], Z = ["srcset", "media"], T = ["srcset"], P = ["loading", "src", "alt", "width", "height"], H = { key: 0 }, X = ["srcset", "media"], S = ["srcset", "media"], C = ["srcset", "media"], Y = ["srcset", "media"], E = ["src"], B = ["src"], I = ["src"], V = ["innerHTML"], j = ["innerHTML"], O = ["innerHTML"], N = {
   key: 1,
   class: "vh--loading-o vh--abs vh--flex vh--jc vh--ai"
 };
-function D(e, o, s, l, t, u) {
-  const p = y("click-outside");
-  return h(), n(a, null, [
-    t.showSlot && !s.lazyload ? b(e.$slots, "default", { key: 0 }) : m("", !0),
-    _((h(), n("div", L, [
+function D(s, o, e, h, t, l) {
+  const u = y("click-outside");
+  return m(), n(c, null, [
+    t.showSlot && !e.lazyload ? w(s.$slots, "default", { key: 0 }) : r("", !0),
+    x((m(), n("div", M, [
       d("div", {
-        class: r(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !s.rightClick }]),
-        onMouseenter: o[1] || (o[1] = (i) => u.isZoom(!0, "hover")),
-        onMouseleave: o[2] || (o[2] = (i) => u.isZoom(!1, "hover")),
-        onMousemove: o[3] || (o[3] = (...i) => u.mousePos && u.mousePos(...i)),
+        class: a(["vh--holder vh--rel vh--flex vh--jc", { "vh--no-click": !e.rightClick }]),
+        onMouseenter: o[1] || (o[1] = (i) => l.isZoom(!0, "hover")),
+        onMouseleave: o[2] || (o[2] = (i) => l.isZoom(!1, "hover")),
+        onMousemove: o[3] || (o[3] = (...i) => l.mousePos && l.mousePos(...i)),
         ref: "vue-hover-zs",
-        onClick: o[4] || (o[4] = (i) => u.isZoom(!t.zoomed, "click"))
+        onClick: o[4] || (o[4] = (i) => l.isZoom(!t.zoomed, "click"))
       }, [
         d("picture", {
-          class: r({ "vh--none": t.zoomed })
+          class: a({ "vh--none": t.zoomed })
         }, [
-          (h(!0), n(a, null, c(s.breakpoints, (i) => (h(), n(a, {
+          (m(!0), n(c, null, f(e.breakpoints, (i) => (m(), n(c, {
             key: i.width
           }, [
-            i.regularWebp ? (h(), n("source", {
+            i.regularWebp ? (m(), n("source", {
               key: 0,
               srcset: i.regularWebp,
               type: "image/webp",
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, Z)) : m("", !0),
-            i.regular ? (h(), n("source", {
+            }, null, 8, L)) : r("", !0),
+            i.regular ? (m(), n("source", {
               key: 1,
               srcset: i.regular,
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, T)) : m("", !0)
+            }, null, 8, Z)) : r("", !0)
           ], 64))), 128)),
-          s.regularWebp ? (h(), n("source", {
+          e.regularWebp ? (m(), n("source", {
             key: 0,
-            srcset: s.regularWebp,
+            srcset: e.regularWebp,
             type: "image/webp"
-          }, null, 8, M)) : m("", !0),
+          }, null, 8, T)) : r("", !0),
           d("img", {
-            loading: s.lazyload ? "lazy" : "eager",
-            src: s.regular,
-            class: r(s.imgClass),
-            alt: s.alt,
-            onLoad: o[0] || (o[0] = (i) => (e.$emit("regularLoaded"), t.showSlot = !1)),
-            width: s.imgWidth,
-            height: s.imgHeight
+            loading: e.lazyload ? "lazy" : "eager",
+            src: e.regular,
+            class: a(e.imgClass),
+            alt: e.alt,
+            onLoad: o[0] || (o[0] = (i) => (s.$emit("regularLoaded"), t.showSlot = !1)),
+            width: e.imgWidth,
+            height: e.imgHeight
           }, null, 42, P)
         ], 2),
-        t.zoomed ? (h(), n("picture", S, [
-          (h(!0), n(a, null, c(s.breakpoints, (i) => (h(), n(a, {
+        t.zoomed ? (m(), n("picture", H, [
+          (m(!0), n(c, null, f(e.breakpoints, (i) => (m(), n(c, {
             key: i.width
           }, [
-            i.zoomWebp ? (h(), n("source", {
+            i.zoomWebp ? (m(), n("source", {
               key: 0,
               srcset: i.zoomWebp,
               type: "image/webp",
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, C)) : i.regularWebp ? (h(), n("source", {
+            }, null, 8, X)) : i.regularWebp ? (m(), n("source", {
               key: 1,
               srcset: i.regularWebp,
               type: "image/webp",
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, H)) : m("", !0),
-            i.zoom ? (h(), n("source", {
+            }, null, 8, S)) : r("", !0),
+            i.zoom ? (m(), n("source", {
               key: 2,
               srcset: i.zoom,
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, X)) : i.regular ? (h(), n("source", {
+            }, null, 8, C)) : i.regular ? (m(), n("source", {
               key: 3,
               srcset: i.regular,
               media: "(min-width:" + i.width + "px)"
-            }, null, 8, Y)) : m("", !0)
+            }, null, 8, Y)) : r("", !0)
           ], 64))), 128)),
-          t.options.zoomWebp ? (h(), n("source", {
+          t.options.zoomWebp ? (m(), n("source", {
             key: 0,
             src: t.options.zoomWebp,
             type: "image/webp"
-          }, null, 8, E)) : m("", !0),
-          t.touch ? (h(), n("img", {
+          }, null, 8, E)) : r("", !0),
+          t.touch ? (m(), n("img", {
             key: 2,
             src: t.options.zoom,
             class: "vh--image vh--abs",
-            style: g("width:" + t.zoomWidth + "px;transform:" + t.touchPosition)
-          }, null, 12, I)) : (h(), n("img", {
+            style: z("width:" + t.zoomWidth + "px;transform:" + t.touchPosition)
+          }, null, 12, I)) : (m(), n("img", {
             key: 1,
             src: t.options.zoom,
             class: "vh--image vh--abs",
-            style: g({ width: t.zoomWidth + "px", transform: "translate(-" + t.x + "px,-" + t.y + "px)" })
+            style: z({ width: t.zoomWidth + "px", transform: "translate(-" + t.x + "px,-" + t.y + "px)" })
           }, null, 12, B))
-        ])) : m("", !0),
-        f(v, { name: "VueHoverfade" }, {
-          default: z(() => [
-            !t.zoomed && !t.loading && !s.clickZoom && !t.touch && s.showMessage ? (h(), n("div", {
+        ])) : r("", !0),
+        g(v, { name: "VueHoverfade" }, {
+          default: p(() => [
+            !t.zoomed && !t.loading && !e.clickZoom && !t.touch && e.showMessage ? (m(), n("div", {
               key: 0,
-              class: r(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
-              innerHTML: s.hoverMessage
-            }, null, 10, V)) : !t.zoomed && !t.loading && !t.touch && s.showMessage ? (h(), n("div", {
+              class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + e.messagePos]),
+              innerHTML: e.hoverMessage
+            }, null, 10, V)) : !t.zoomed && !t.loading && !t.touch && e.showMessage ? (m(), n("div", {
               key: 1,
-              class: r(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
-              innerHTML: s.clickMessage
-            }, null, 10, j)) : !t.zoomed && !t.loading && t.touch && s.showMessageTouch ? (h(), n("div", {
+              class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + e.messagePos]),
+              innerHTML: e.clickMessage
+            }, null, 10, j)) : !t.zoomed && !t.loading && t.touch && e.showMessageTouch ? (m(), n("div", {
               key: 2,
-              class: r(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + s.messagePos]),
-              innerHTML: s.touchMessage
-            }, null, 10, O)) : m("", !0)
+              class: a(["vh--message vh--abs vh--flex vh--jc vh--ai", "vh--message-" + e.messagePos]),
+              innerHTML: e.touchMessage
+            }, null, 10, O)) : r("", !0)
           ]),
           _: 1
         })
       ], 34),
-      f(v, { name: "VueHoverfade" }, {
-        default: z(() => [
-          t.touch && t.zoomed && t.loaded && !s.tapToClose ? (h(), n("div", {
+      g(v, { name: "VueHoverfade" }, {
+        default: p(() => [
+          t.touch && t.zoomed && t.loaded && !e.tapToClose ? (m(), n("div", {
             key: 0,
-            class: r(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + s.closePos]),
-            onClick: o[5] || (o[5] = A((i) => (t.zoomed = !1, e.$emit("offZoom")), ["stop"])),
+            class: a(["vh--close vh--abs vh--flex vh--jc vh--ai", "vh--" + e.closePos]),
+            onClick: o[5] || (o[5] = b((i) => (t.zoomed = !1, s.$emit("offZoom")), ["stop"])),
             innerHTML: "×"
-          }, null, 2)) : t.loading ? (h(), n("div", N, o[6] || (o[6] = [
+          }, null, 2)) : t.loading ? (m(), n("div", N, [...o[6] || (o[6] = [
             d("div", {
               class: "vh--loading",
               innerHTML: "◠"
             }, null, -1)
-          ]))) : m("", !0)
+          ])])) : r("", !0)
         ]),
         _: 1
       })
     ])), [
-      [p, u.isZoom],
-      [k, !t.showSlot || s.lazyload]
+      [u, l.isZoom],
+      [W, !t.showSlot || e.lazyload]
     ])
   ], 64);
 }
-const R = /* @__PURE__ */ W(x, [["render", D]]), Q = {
-  install: (e, o) => {
-    e.component("VueImageZoomer", R);
+const F = /* @__PURE__ */ k(A, [["render", D]]), Q = {
+  install: (s, o) => {
+    s.component("VueImageZoomer", F);
   }
 };
 export {
-  R as VueImageZoomer,
+  F as VueImageZoomer,
   Q as default
 };

@@ -121,6 +121,28 @@
           img-class="img-fluid"
           alt="Ball pool" />
 
+        <h2 class="w-100 text-center mt-5 pt-3 border-top">Different Aspect Ratios Test</h2>
+        <p>This example demonstrates zooming with different aspect ratios - square original (1:1) with wide zoom image (16:9).</p>
+        <p>You should now be able to pan across the entire zoomed image even with different aspect ratios.</p>
+<code>
+<pre class="bg-light border rounded p-2 d-inline-block">
+&lt;vue-image-zoom 
+  regular="img/sky.jpg" 
+  zoom="img/sky-zoom.jpg" 
+  :zoom-amount="3" 
+  img-class="img-fluid"
+  alt="Sky with different ratios"
+  :tap-to-close="true" /&gt;
+</pre>
+</code>
+        <vue-image-zoomer 
+          regular="https://flyers-cdn.glouton.app/items/3577/611564_cutout.jpg" 
+          zoom="https://flyers-cdn.glouton.app/items/3577/611564_original_cutout.jpg" 
+          :zoom-amount="3" 
+          img-class="img-fluid"
+          alt="Sky with different ratios"
+          :tap-to-close="true" />
+
         <h2 class="w-100 text-center mt-5 pt-3 border-top">Breakpoints</h2>
         <p>Browser width 1200px or above will show black &amp; white sky image, 992 and above will show sky inverted. Below 992px will be original sky image set.</p>
         <p>Width order must start from highest min width.</p>

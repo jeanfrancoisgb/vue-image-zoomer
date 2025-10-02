@@ -60,7 +60,7 @@ declare module "VueImageZoomer.vue" {
         rightClick: boolean;
     }, {}, {}, {
         clickOutside: {
-            mounted(el: any, binding: import("vue").DirectiveBinding<any, string, string>): void;
+            mounted(el: any, binding: import("vue").DirectiveBinding<any, string, any>): void;
             unmounted(el: any): void;
         };
     }, string, import("vue").ComponentProvideOptions, true, {}, any>;
