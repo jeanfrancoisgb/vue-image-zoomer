@@ -357,8 +357,7 @@ export default {
 
             //set zoom width if zoom amount option applied
             if(this.options.zoomAmount != 0){
-                this.zoomWidth = this.origX * this.options.zoomAmount;
-                // Don't set zoomHeight here - let it be calculated from the actual image
+                // Don't set dimensions here - let them be calculated from the actual image
                 if(this.touch){
                   this.mobilePos();
                 }
@@ -414,9 +413,23 @@ export default {
                     this.zoomHeight = src.target.height;
                     this.options.zoomAmount = src.target.width / this.origX;
                 } else {
-                    // If zoomAmount is set, calculate height based on actual image ratio
-                    this.zoomHeight = (src.target.height / src.target.width) * this.zoomWidth;
+                    // If zoomAmount is set, scale the image but preserve its aspect ratio
+                    const scaleFactor = this.options.zoomAmount;
+                    this.zoomWidth = this.origX * scaleFactor;
+                    
+                    // Calculate height based on the zoom image's actual aspect ratio
+                    const zoomAspectRatio = src.target.height / src.target.width;
+                    this.zoomHeight = this.zoomWidth * zoomAspectRatio;
                 }
+                
+                // Debug: Log dimensions to help troubleshoot
+                console.log('Zoom Debug:', {
+                    original: { width: this.origX, height: this.origY },
+                    zoom: { width: this.zoomWidth, height: this.zoomHeight },
+                    zoomAmount: this.options.zoomAmount,
+                    maxMovement: { x: this.zoomWidth - this.origX, y: this.zoomHeight - this.origY }
+                });
+                
                 this.loaded = true;
                 this.loading = false; 
                 this.$emit('zoomLoaded');
@@ -485,6 +498,14 @@ export default {
                     // Use the actual zoom image dimensions for calculations
                     this.x = Math.max(0, Math.min(mouseX * (zoomFactorX - 1), maxX));
                     this.y = Math.max(0, Math.min(mouseY * (zoomFactorY - 1), maxY));
+                    
+                    // Debug: Log position calculations
+                    console.log('Mouse Debug:', {
+                        mouse: { x: mouseX, y: mouseY },
+                        factors: { x: zoomFactorX, y: zoomFactorY },
+                        max: { x: maxX, y: maxY },
+                        position: { x: this.x, y: this.y }
+                    });
                 }
             }
         }

@@ -141,6 +141,7 @@
           :zoom-amount="3" 
           img-class="img-fluid"
           alt="Sky with different ratios"
+          :click-zoom="true"
           :tap-to-close="true" />
 
         <h2 class="w-100 text-center mt-5 pt-3 border-top">Breakpoints</h2>
