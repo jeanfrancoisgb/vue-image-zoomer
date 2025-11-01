@@ -498,14 +498,6 @@ export default {
                     // Use the actual zoom image dimensions for calculations
                     this.x = Math.max(0, Math.min(mouseX * (zoomFactorX - 1), maxX));
                     this.y = Math.max(0, Math.min(mouseY * (zoomFactorY - 1), maxY));
-                    
-                    // Debug: Log position calculations
-                    console.log('Mouse Debug:', {
-                        mouse: { x: mouseX, y: mouseY },
-                        factors: { x: zoomFactorX, y: zoomFactorY },
-                        max: { x: maxX, y: maxY },
-                        position: { x: this.x, y: this.y }
-                    });
                 }
             }
         }
